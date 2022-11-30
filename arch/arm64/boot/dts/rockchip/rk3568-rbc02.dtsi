@@ -16,6 +16,24 @@
 	aliases {
     	/delete-property/ dsi0;
 		/delete-property/ dsi1;
+		/delete-property/ serial0;
+		/delete-property/ serial1;
+		/delete-property/ serial2;
+		/delete-property/ serial3;
+		/delete-property/ serial4;
+		/delete-property/ serial5;
+		/delete-property/ serial6;
+		/delete-property/ serial7;
+		/delete-property/ serial8;
+		/delete-property/ serial9;
+		serial0 = &uart2;
+		serial1 = &uart0;
+		serial2 = &uart3;
+		serial3 = &uart4;
+		serial4 = &uart5;
+		serial5 = &uart8;
+		serial6 = &uart9;
+		serial7 = &uart7;
 	};
 }; 
 
@@ -47,6 +65,36 @@
     vccio7-supply = <&vcc_3v3>;
 };
 
+&uart2 {
+	status = "okay";
+};
+&uart0 {
+	status = "okay";
+};
+
+&uart3 {
+	status = "okay";
+};
+
+&uart4 {
+	status = "okay";
+};
+
+&uart5 {
+	status = "okay";
+};
+
+&uart8 {
+	status = "okay";
+};
+
+&uart9 {
+	status = "okay";
+};
+
+&uart7 {
+	status = "okay";
+};
 
 &gpu {
 	status = "disabled";
