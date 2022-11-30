@@ -70,35 +70,42 @@
 };
 
 &uart0 {
+	dma-names = "tx","rx";
 	status = "okay";
 };
 
 &uart3 {
+	dma-names = "tx","rx";
 	pinctrl-0 = <&uart3m1_xfer>;
 	status = "okay";
 };
 
 &uart4 {
+	dma-names = "tx","rx";
 	pinctrl-0 = <&uart4m1_xfer>;
 	status = "okay";
 };
 
 &uart5 {
+	dma-names = "tx","rx";
 	pinctrl-0 = <&uart5m1_xfer>;
 	status = "okay";
 };
 
 &uart8 {
+	dma-names = "tx","rx";
 	pinctrl-0 = <&uart8m1_xfer>;
 	status = "okay";
 };
 
 &uart9 {
+	dma-names = "tx","rx";
 	pinctrl-0 = <&uart9m1_xfer>;
 	status = "okay";
 };
 
 &uart7 {
+	dma-names = "tx","rx";
 	pinctrl-0 = <&uart7m1_xfer>;
 	status = "okay";
 };
