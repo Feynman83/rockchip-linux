@@ -72,20 +72,16 @@
 };
 
 
-&vcc5v0_host_en {
-	rockchip,pins = <4 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
+&combphy0_us {
+	status = "okay";
 };
 
-&vcc5v0_otg_en {
-	rockchip,pins = <4 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
+&combphy1_usq {
+	status = "okay";
 };
 
-&vcc5v0_host {
-	gpio = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
-};
-
-&vcc5v0_otg {
-	gpio = <&gpio4 RK_PA6 GPIO_ACTIVE_HIGH>;
+&combphy2_psq {
+	status = "okay";
 };
 
 &mdio0 {
