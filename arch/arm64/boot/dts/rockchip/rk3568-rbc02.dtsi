@@ -33,7 +33,6 @@
 		serial4 = &uart5;
 		serial5 = &uart8;
 		serial6 = &uart9;
-		serial7 = &uart7;
 	};
 }; 
 
@@ -125,11 +124,6 @@
 	status = "okay";
 };
 
-&uart7 {
-	dma-names = "tx","rx";
-	pinctrl-0 = <&uart7m1_xfer>;
-	status = "okay";
-};
 
 &gpu {
 	status = "disabled";
