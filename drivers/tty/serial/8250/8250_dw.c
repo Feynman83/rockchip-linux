@@ -645,6 +645,10 @@ static int dw8250_probe(struct platform_device *pdev)
 		up->dma = &data->data.dma;
 	}
 
+	p->rs485_config = serial8250_em485_config;
+	up->rs485_start_tx = serial8250_em485_start_tx;
+	up->rs485_stop_tx = serial8250_em485_stop_tx;
+
 	data->data.line = serial8250_register_8250_port(up);
 	if (data->data.line < 0) {
 		err = data->data.line;
