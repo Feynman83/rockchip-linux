@@ -65,6 +65,27 @@
     vccio7-supply = <&vcc_3v3>;
 };
 
+&sata2 {
+	status = "okay";
+};
+
+&i2c1 {
+	status = "okay";
+	eeprom@50 {
+		compatible = "atmel,24c04";
+		reg = <0x50>;
+		pagesize = <16>;
+	};
+};
+
+&i2c5 {
+	status = "okay";
+	hym8563: hym8563@51 {
+		compatible = "haoyu,hym8563";
+		reg = <0x51>;
+	};
+};
+
 &uart2 {
 	status = "okay";
 };
