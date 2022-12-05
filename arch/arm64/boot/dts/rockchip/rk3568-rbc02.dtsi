@@ -79,6 +79,17 @@
 	status = "okay";
 };
 
+&i2c0 {
+	status = "okay";
+	clock-frequency = <80000>;
+	gpio@22 {
+		compatible = "ti,tca6424";
+		reg = <0x22>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+};
+
 &i2c1_xfer {
 	rockchip,pins =
 		/* i2c1_scl */
@@ -103,19 +114,25 @@
 	};
 };
 
-&i2c0 {
-	status = "okay";
-	clock-frequency = <80000>;
-	gpio@22 {
-		compatible = "ti,tca6424";
-		reg = <0x22>;
-		gpio-controller;
-		#gpio-cells = <2>;
-	};
+
+
+&i2c5m0_xfer {
+	rockchip,pins =
+		/* i2c5_scl */
+		<3 RK_PB3 RK_FUNC_GPIO &pcfg_pull_up_drv_level_15>,
+		/* i2c5_sda */
+		<3 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up_drv_level_15>;
 };
 
 &i2c5 {
-	status = "okay";
+	compatible = "i2c-gpio";
+	sda-gpios = <&gpio3 12 GPIO_ACTIVE_HIGH>;
+	scl-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c5m0_xfer>;
+	i2c-gpio,delay-us = <5>;	/* ~100 kHz */
+	#address-cells = <1>;
+	#size-cells = <0>;
 	hym8563: hym8563@51 {
 		compatible = "haoyu,hym8563";
 		reg = <0x51>;
