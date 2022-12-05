@@ -452,6 +452,15 @@ config USB_SERIAL_PL2303
 	  To compile this driver as a module, choose M here: the
 	  module will be called pl2303.
 
+config USB_SERIAL_CH344
+	tristate "USB Winchiphead CH344 4 Port Serial Driver"
+	help
+	  Say Y here if you want to use a Winchiphead CH344 4 port
+	  USB to serial adapter.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called ch344.
+
 config USB_SERIAL_OTI6858
 	tristate "USB Ours Technology Inc. OTi-6858 USB To RS232 Bridge Controller"
 	help

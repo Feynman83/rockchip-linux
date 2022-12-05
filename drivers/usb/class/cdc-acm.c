@@ -1925,7 +1925,10 @@ static const struct usb_device_id acm_ids[] = {
 	.driver_info = IGNORE_DEVICE,
 	},
 #endif
-
+	/*CH344*/
+	{ USB_DEVICE(0x1a86, 0x55d5),
+	.driver_info = IGNORE_DEVICE,
+	},
 	/*Samsung phone in firmware update mode */
 	{ USB_DEVICE(0x04e8, 0x685d),
 	.driver_info = IGNORE_DEVICE,
