@@ -54,6 +54,17 @@
 /delete-node/ &backlight;
 /delete-node/ &backlight1;
 
+
+/delete-node/ &rk809_sound;
+/delete-node/ &sdio_pwrseq;
+
+/delete-node/ &hp_det;
+/delete-node/ &mxc6655xa_irq_gpio;
+/delete-node/ &touch_gpio;
+/delete-node/ &wifi_enable_h;
+/delete-node/ &uart8_gpios;
+
+
 &pmu_io_domains {
     pmuio2-supply = <&vcc3v3_pmu>;
     vccio1-supply = <&vccio_acodec>;
@@ -89,68 +100,85 @@
 	status = "okay";
 };
 
+&pinctrl {
+	rs485ctrl {
+		com1_485_ctrl: com1_485_ctrl {
+			rockchip,pins = <0 RK_PC3 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		com2_485_ctrl: com2_485_ctrl {
+			rockchip,pins = <3 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		com3_485_ctrl: com3_485_ctrl {
+			rockchip,pins = <3 RK_PB6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		com4_485_ctrl: com4_485_ctrl {
+			rockchip,pins = <4 RK_PD2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		com5_485_ctrl: com5_485_ctrl {
+			rockchip,pins = <3 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		com6_485_ctrl: com6_485_ctrl {
+			rockchip,pins = <4 RK_PC2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+};
 &uart0 {
 	status = "okay";
 	dma-names = "tx","rx";
-	rs485-term = <&gpio0 RK_PC3 GPIO_ACTIVE_HIGH>;
-	rs485-rts-delay = <1 1>;
+	pinctrl-0 = <&uart0_xfer &com1_485_ctrl>;
+	rs485-term-gpios = <&gpio0 RK_PC3 GPIO_ACTIVE_HIGH>;
+	rs485-rts-delay = <1 5>;
 	rs485-rx-during-tx;
-	rs485-rts-active-low;
 	linux,rs485-enabled-at-boot-time;
 };
 
 &uart3 {
 	status = "okay";
 	dma-names = "tx","rx";
-	pinctrl-0 = <&uart3m1_xfer>;
-	rs485-term = <&gpio3 RK_PA4 GPIO_ACTIVE_HIGH>;
-	rs485-rts-delay = <1 1>;
+	pinctrl-0 = <&uart3m1_xfer &com2_485_ctrl>;
+	rs485-term-gpios = <&gpio3 RK_PA4 GPIO_ACTIVE_HIGH>;
+	rs485-rts-delay = <1 5>;
 	rs485-rx-during-tx;
-	rs485-rts-active-low;
 	linux,rs485-enabled-at-boot-time;
 };
 
 &uart4 {
 	status = "okay";
 	dma-names = "tx","rx";
-	pinctrl-0 = <&uart4m1_xfer>;
-	rs485-term = <&gpio3 RK_PB6 GPIO_ACTIVE_HIGH>;
-	rs485-rts-delay = <1 1>;
+	pinctrl-0 = <&uart4m1_xfer &com3_485_ctrl>;
+	rs485-term-gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_HIGH>;
+	rs485-rts-delay = <1 5>;
 	rs485-rx-during-tx;
-	rs485-rts-active-low;
 	linux,rs485-enabled-at-boot-time;
 };
 
 &uart5 {
 	status = "okay";
 	dma-names = "tx","rx";
-	pinctrl-0 = <&uart5m1_xfer>;
-	rs485-term = <&gpio4 RK_PD2 GPIO_ACTIVE_HIGH>;
-	rs485-rts-delay = <1 1>;
+	pinctrl-0 = <&uart5m1_xfer &com4_485_ctrl>;
+	rs485-term-gpios = <&gpio4 RK_PD2 GPIO_ACTIVE_HIGH>;
+	rs485-rts-delay = <1 5>;
 	rs485-rx-during-tx;
-	rs485-rts-active-low;
 	linux,rs485-enabled-at-boot-time;
 };
 
 &uart8 {
 	status = "okay";
 	dma-names = "tx","rx";
-	pinctrl-0 = <&uart8m1_xfer>;
-	rs485-term = <&gpio3 RK_PA3 GPIO_ACTIVE_HIGH>;
-	rs485-rts-delay = <1 1>;
+	pinctrl-0 = <&uart8m1_xfer &com5_485_ctrl>;
+	rs485-term-gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_HIGH>;
+	rs485-rts-delay = <1 5>;
 	rs485-rx-during-tx;
-	rs485-rts-active-low;
 	linux,rs485-enabled-at-boot-time;
 };
 
 &uart9 {
 	status = "okay";
 	dma-names = "tx","rx";
-	pinctrl-0 = <&uart9m1_xfer>;
-	rs485-term = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;
-	rs485-rts-delay = <1 1>;
+	pinctrl-0 = <&uart9m1_xfer &com6_485_ctrl>;
+	rs485-term-gpios = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;
+	rs485-rts-delay = <1 5>;
 	rs485-rx-during-tx;
-	rs485-rts-active-low;
 	linux,rs485-enabled-at-boot-time;
 };
 

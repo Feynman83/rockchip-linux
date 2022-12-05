@@ -695,8 +695,7 @@ int serial8250_em485_config(struct uart_port *port, struct serial_rs485 *rs485)
 	memset(rs485->padding, 0, sizeof(rs485->padding));
 	port->rs485 = *rs485;
 
-	gpiod_set_value(port->rs485_term_gpio,
-			rs485->flags & SER_RS485_TERMINATE_BUS);
+	gpiod_set_value(port->rs485_term_gpio,0);
 
 	/*
 	 * Both serial8250_em485_init() and serial8250_em485_destroy()
@@ -1465,6 +1464,7 @@ void serial8250_em485_stop_tx(struct uart_8250_port *p)
 		mcr &= ~UART_MCR_RTS;
 	serial8250_out_MCR(p, mcr);
 
+	gpiod_set_value(p->port.rs485_term_gpio,0);
 	/*
 	 * Empty the RX FIFO, we are not interested in anything
 	 * received during the half-duplex transmission.
@@ -1509,18 +1509,66 @@ static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
 	hrtimer_start(hrt, t, HRTIMER_MODE_REL);
 }
 
+__u32  uart8250_cal_tick_period(struct uart_8250_port *p)
+{
+	unsigned int lcr;
+	s64 nstime_len, bittime;//ns
+
+	unsigned int bit_len = 2;//1 start + 1 stop bit
+	unsigned int bit_len_decimal = 0;
+	struct uart_8250_em485 *em485 = p->em485;
+	unsigned int baudrate=9600;
+	if(em485){
+		baudrate = em485->baudrate*100;
+	}
+	lcr = serial_in(p, UART_LCR);
+	switch(lcr & 0x3){
+		case 0:
+			bit_len += 5;
+			if(lcr & 0x4)//STOP bit
+				bit_len_decimal = 5;//0.5
+
+			break;
+		case 1:
+			bit_len += 6;
+			if(lcr & 0x4)
+				bit_len += 1;
+			break;
+		case 2:
+			bit_len += 7;
+			if(lcr & 0x4)
+				bit_len += 1;
+			break;
+		case 3:
+			bit_len += 8;
+			if(lcr & 0x4)
+				bit_len += 1;
+			break;
+	}
+	if(lcr & 0x8)//Parity bit
+		bit_len += 1;
+
+	bittime = ((NSEC_PER_SEC + (baudrate-1)) /baudrate);
+	nstime_len = bittime * bit_len;
+	if(bit_len_decimal)
+		nstime_len += (bittime/2);
+
+	return	(nstime_len/1000);
+
+}
+
 static void __stop_tx_rs485(struct uart_8250_port *p)
 {
 	struct uart_8250_em485 *em485 = p->em485;
-
+	unsigned int delay;
 	/*
 	 * rs485_stop_tx() is going to set RTS according to config
 	 * AND flush RX FIFO if required.
 	 */
 	if (p->port.rs485.delay_rts_after_send > 0) {
 		em485->active_timer = &em485->stop_tx_timer;
-		start_hrtimer_ms(&em485->stop_tx_timer,
-				   p->port.rs485.delay_rts_after_send);
+		delay=(em485->tx_remain_len+1)*uart8250_cal_tick_period(p)/1000+1;
+		start_hrtimer_ms(&em485->stop_tx_timer,delay);
 	} else {
 		p->rs485_stop_tx(p);
 		em485->active_timer = NULL;
@@ -1539,17 +1587,18 @@ static inline void __stop_tx(struct uart_8250_port *p)
 	struct uart_8250_em485 *em485 = p->em485;
 
 	if (em485) {
-		unsigned char lsr = serial_in(p, UART_LSR);
+		//unsigned char lsr = serial_in(p, UART_LSR);
 		/*
 		 * To provide required timeing and allow FIFO transfer,
 		 * __stop_tx_rs485() must be called only when both FIFO and
 		 * shift register are empty. It is for device driver to enable
 		 * interrupt on TEMT.
 		 */
-		if ((lsr & BOTH_EMPTY) != BOTH_EMPTY)
-			return;
+		// if ((lsr & UART_LSR_THRE) != UART_LSR_THRE)
+		// 	return ;
 
-		__stop_tx_rs485(p);
+		
+		 __stop_tx_rs485(p);
 	}
 	__do_stop_tx(p);
 }
@@ -1633,6 +1682,7 @@ static inline void start_tx_rs485(struct uart_port *port)
 	struct uart_8250_port *up = up_to_u8250p(port);
 	struct uart_8250_em485 *em485 = up->em485;
 
+	gpiod_set_value(port->rs485_term_gpio,1);
 	/*
 	 * While serial8250_em485_handle_stop_tx() is a noop if
 	 * em485->active_timer != &em485->stop_tx_timer, it might happen that
@@ -1827,8 +1877,9 @@ void serial8250_tx_chars(struct uart_8250_port *up)
 {
 	struct uart_port *port = &up->port;
 	struct circ_buf *xmit = &port->state->xmit;
+	struct uart_8250_em485 *em485 = up->em485;
 	int count;
-
+	
 	if (port->x_char) {
 		uart_xchar_out(port, UART_TX);
 		return;
@@ -1841,9 +1892,19 @@ void serial8250_tx_chars(struct uart_8250_port *up)
 		__stop_tx(up);
 		return;
 	}
-
+	
 	count = up->tx_loadsz;
+	if (em485) {
+		if (em485->tx_remain_len >= count) {
+			em485->tx_remain_len=count/3; // 1/3 of tx fifo
+		}else{
+			em485->tx_remain_len=0;
+		}
+	}
 	do {
+		if (em485) {
+			em485->tx_remain_len++;
+		}
 		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
 		if (up->bugs & UART_BUG_TXRACE) {
 			/*
@@ -1939,7 +2000,7 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
 #ifndef CONFIG_ARCH_ROCKCHIP
 	bool skip_rx = false;
 #endif
-
+	
 	if (iir & UART_IIR_NO_INT)
 		return 0;
 

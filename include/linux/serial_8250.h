@@ -82,6 +82,8 @@ struct uart_8250_em485 {
 	struct hrtimer		*active_timer;  /* pointer to active timer */
 	struct uart_8250_port	*port;          /* for hrtimer callbacks */
 	unsigned int		tx_stopped:1;	/* tx is currently stopped */
+	unsigned int		tx_remain_len:7; /* tx fifo length */
+	unsigned int		baudrate:16;	/* baudrate /100*/
 };
 
 /*

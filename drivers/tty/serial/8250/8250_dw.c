@@ -336,6 +336,8 @@ dw8250_do_pm(struct uart_port *port, unsigned int state, unsigned int old)
 static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
 			       struct ktermios *old)
 {
+	struct uart_8250_port *up;
+	struct uart_8250_em485 *em485;
 #ifndef CONFIG_ARCH_ROCKCHIP
 	unsigned long newrate = tty_termios_baud_rate(termios) * 16;
 #endif
@@ -349,6 +351,11 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
 
 	clk_disable_unprepare(d->clk);
 #ifdef CONFIG_ARCH_ROCKCHIP
+	up = up_to_u8250p(p);
+	em485 = up->em485;
+	if(em485) {
+		em485->baudrate = baud/100;
+	}
 	if (d->clk) {
 		if (baud <= 115200)
 			rate = 24000000;
@@ -644,7 +651,7 @@ static int dw8250_probe(struct platform_device *pdev)
 		data->data.dma.txconf.dst_maxburst = p->fifosize / 4;
 		up->dma = &data->data.dma;
 	}
-
+	up->dma=NULL;
 	p->rs485_config = serial8250_em485_config;
 	up->rs485_start_tx = serial8250_em485_start_tx;
 	up->rs485_stop_tx = serial8250_em485_stop_tx;
