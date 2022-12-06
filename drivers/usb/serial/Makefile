@@ -47,6 +47,7 @@ obj-$(CONFIG_USB_SERIAL_OPTION)			+= option.o
 obj-$(CONFIG_USB_SERIAL_OTI6858)		+= oti6858.o
 obj-$(CONFIG_USB_SERIAL_PL2303)			+= pl2303.o
 obj-$(CONFIG_USB_SERIAL_CH344)			+= ch343.o
+obj-$(CONFIG_USB_SERIAL_CH9344)			+= ch9344.o
 obj-$(CONFIG_USB_SERIAL_QCAUX)			+= qcaux.o
 obj-$(CONFIG_USB_SERIAL_QUALCOMM)		+= qcserial.o
 obj-$(CONFIG_USB_SERIAL_QT2)			+= quatech2.o

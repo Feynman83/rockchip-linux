@@ -460,6 +460,15 @@ config USB_SERIAL_CH344
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called ch344.
+	  
+config USB_SERIAL_CH9344
+	tristate "USB CH9344 8 Port Serial Driver"
+	help
+	  Say Y here if you want to use the CH9344 USB Serial 8 port
+	  adapter from Exar.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called CH9344.
 
 config USB_SERIAL_OTI6858
 	tristate "USB Ours Technology Inc. OTi-6858 USB To RS232 Bridge Controller"
