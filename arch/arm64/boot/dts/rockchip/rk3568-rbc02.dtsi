@@ -34,7 +34,87 @@
 		serial5 = &uart8;
 		serial6 = &uart9;
 	};
-}; 
+
+	xbrother_gpio {
+		compatible = "gpio-export";
+		#size-cells = <0>;
+		sys_name = "xbrother";
+		di08 {
+			gpio-export,name = "di08";
+			gpios = <&tca6424 0 GPIO_ACTIVE_LOW>;
+		};
+		di07 {
+			gpio-export,name = "di07";
+			gpios = <&tca6424 1 GPIO_ACTIVE_LOW>;
+		};
+		di06 {
+			gpio-export,name = "di06";
+			gpios = <&tca6424 2 GPIO_ACTIVE_LOW>;
+		};
+		di05 {
+			gpio-export,name = "di05";
+			gpios = <&tca6424 3 GPIO_ACTIVE_LOW>;
+		};
+		di04 {
+			gpio-export,name = "di04";
+			gpios = <&tca6424 4 GPIO_ACTIVE_LOW>;
+		};
+		di03 {
+			gpio-export,name = "di03";
+			gpios = <&tca6424 5 GPIO_ACTIVE_LOW>;
+		};
+		di02 {
+			gpio-export,name = "di02";
+			gpios = <&tca6424 6 GPIO_ACTIVE_LOW>;
+		};
+		di01 {
+			gpio-export,name = "di01";
+			gpios = <&tca6424 7 GPIO_ACTIVE_LOW>;
+		};
+		do01 {
+			gpio-export,name = "do01";
+			gpios = <&tca6424 8 GPIO_ACTIVE_HIGH>;
+			gpio-export,output = <0>;
+		};
+		do02 {
+			gpio-export,name = "do02";
+			gpios = <&tca6424 9 GPIO_ACTIVE_HIGH>;
+			gpio-export,output = <0>;
+		};
+		e2wp {
+			gpio-export,name = "e2wp";
+			gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
+			gpio-export,output = <1>;
+		};
+		12va-ctl {
+			gpio-export,name = "12va-ctl";
+			gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+			gpio-export,output = <0>;
+		};
+		12vb-ctl {
+			gpio-export,name = "12vb-ctl";
+			gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
+			gpio-export,output = <0>;
+		};
+		12va-det {
+			gpio-export,name = "12va-det";
+			gpios = <&gpio3 6 0>;
+		};
+		12vb-det {
+			gpio-export,name = "12vb-det";
+			gpios = <&gpio3 5 0>;
+		};
+		12v-det {
+			gpio-export,name = "12v-det";
+			gpios = <&gpio3 4 0>;
+		};
+		fan {
+			gpio-export,name = "fan";
+			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+			gpio-export,output = <0>;
+		};
+	};
+};
 
 
 /delete-node/ &gt1x;
@@ -83,7 +163,7 @@
 &i2c0 {
 	status = "okay";
 	clock-frequency = <80000>;
-	gpio@22 {
+	tca6424: gpio@22 {
 		compatible = "ti,tca6424";
 		reg = <0x22>;
 		gpio-controller;
@@ -166,7 +246,9 @@
 &pinctrl {
 	rs485ctrl {
 		com1_485_ctrl: com1_485_ctrl {
-			rockchip,pins = <0 RK_PC3 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = 
+				<0 RK_PC3 RK_FUNC_GPIO &pcfg_pull_up>,
+				<0 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 		com2_485_ctrl: com2_485_ctrl {
 			rockchip,pins = <3 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>;
