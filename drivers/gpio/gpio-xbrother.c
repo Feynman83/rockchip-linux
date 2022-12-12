@@ -48,6 +48,8 @@ static int __init of_gpio_export_probe(struct platform_device *pdev)
 			unsigned flags = 0;
 			enum of_gpio_flags of_flags;
 			gpio = of_get_gpio_flags(cnp, i, &of_flags);
+			if(!gpio_is_valid(gpio))
+				continue;
 			if (of_flags == OF_GPIO_ACTIVE_LOW)
 				flags |= GPIOF_ACTIVE_LOW;
 			if (!of_property_read_u32(cnp, "gpio-export,output", &val))
