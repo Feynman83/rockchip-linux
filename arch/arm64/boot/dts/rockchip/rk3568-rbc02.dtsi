@@ -97,11 +97,11 @@
 			gpio-export,output = <0>;
 		};
 		12va-det {
-			gpio-export,name = "12va-det";
+			gpio-export,name = "12vb-det";
 			gpios = <&gpio3 6 0>;
 		};
 		12vb-det {
-			gpio-export,name = "12vb-det";
+			gpio-export,name = "12va-det";
 			gpios = <&gpio3 5 0>;
 		};
 		12v-det {
