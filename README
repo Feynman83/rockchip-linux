@@ -16,3 +16,21 @@ several of them using the Restructured Text markup notation.
 Please read the Documentation/process/changes.rst file, as it contains the
 requirements for building and running the kernel, and information about
 the problems which may result by upgrading your kernel.
+
+
+
+step1: install aarch64-linux-gnu-gcc-9
+
+sudo apt install gcc-9-aarch64-linux-gnu
+
+sudo update-alternatives --install /usr/bin/aarch64-linux-gnu-gcc aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc-9 9
+
+sudo update-alternatives --config aarch64-linux-gnu-gcc
+
+step2:
+
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+make rbc02pro_rk3568_defconfig
+make rk3568-rbc02.img
