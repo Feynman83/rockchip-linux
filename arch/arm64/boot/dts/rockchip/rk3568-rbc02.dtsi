@@ -194,6 +194,11 @@
 		reg = <0x50>;
 		pagesize = <16>;
 	};
+	ds1307@68 {
+		compatible = "dallas,ds1307";
+		reg = <0x68>;
+		status = "okay";
+	};
 };
 
 &i2c2m0_xfer {
