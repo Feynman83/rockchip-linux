@@ -34,3 +34,10 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 
 make rbc02pro_rk3568_defconfig
 make rk3568-rbc02.img
+
+
+
+step3: burn to board
+
+cp  zboot.img to board /tmp directory
+dd if=/tmp/zboot.img of=/dev/mmcblk0p3 bs=1M
