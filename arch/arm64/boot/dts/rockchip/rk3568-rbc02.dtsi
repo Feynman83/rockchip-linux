@@ -194,11 +194,6 @@
 		reg = <0x50>;
 		pagesize = <16>;
 	};
-	ds1307@68 {
-		compatible = "dallas,ds1307";
-		reg = <0x68>;
-		status = "okay";
-	};
 };
 
 &i2c2m0_xfer {
@@ -218,6 +213,10 @@
 	i2c-gpio,delay-us = <5>;	/* ~100 kHz */
 	#address-cells = <1>;
 	#size-cells = <0>;
+	ds1307: rtc@68 {
+		compatible = "dallas,ds1307";
+		reg = <0x68>;
+	};
 };
 
 &i2c5m0_xfer {
