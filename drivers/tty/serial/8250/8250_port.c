@@ -1499,7 +1499,14 @@ static enum hrtimer_restart serial8250_em485_handle_stop_tx(struct hrtimer *t)
 	serial8250_rpm_put(p);
 	return HRTIMER_NORESTART;
 }
+static void start_hrtimer_us(struct hrtimer *hrt, unsigned long usec)
+{
+	long sec = usec / 1000000;
+	long nsec = (usec % 1000000) * 1000;
+	ktime_t t = ktime_set(sec, nsec);
 
+	hrtimer_start(hrt, t, HRTIMER_MODE_REL);
+}
 static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
 {
 	long sec = msec / 1000;
@@ -1567,8 +1574,9 @@ static void __stop_tx_rs485(struct uart_8250_port *p)
 	 */
 	if (p->port.rs485.delay_rts_after_send > 0) {
 		em485->active_timer = &em485->stop_tx_timer;
-		delay=(em485->tx_remain_len+1)*uart8250_cal_tick_period(p)/1000+1;
-		start_hrtimer_ms(&em485->stop_tx_timer,delay);
+		//delay=(em485->tx_remain_len+1)*uart8250_cal_tick_period(p)/1000+1;
+		delay=(em485->tx_remain_len)*uart8250_cal_tick_period(p)+50;
+		start_hrtimer_us(&em485->stop_tx_timer,delay);
 	} else {
 		p->rs485_stop_tx(p);
 		em485->active_timer = NULL;
