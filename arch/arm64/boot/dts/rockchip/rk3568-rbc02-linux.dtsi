@@ -6,7 +6,7 @@
 
 / {
 	chosen: chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyS0,115200n8 root=PARTUUID=BFC563F4-7856 rw rootwait crashkernel=256M";
+		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyS0,115200n8 root=PARTUUID=BFC563F4-7856 rw rootwait crashkernel=64M";
 	};
 
 	
