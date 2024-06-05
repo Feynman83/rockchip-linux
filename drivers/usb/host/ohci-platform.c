@@ -118,7 +118,7 @@ static int ohci_platform_probe(struct platform_device *dev)
 			dev_name(&dev->dev));
 	if (!hcd)
 		return -ENOMEM;
-
+	msleep(200);
 	platform_set_drvdata(dev, hcd);
 	dev->dev.platform_data = pdata;
 	priv = hcd_to_ohci_priv(hcd);
